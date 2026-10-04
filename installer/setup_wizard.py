@@ -1,6 +1,8 @@
+import os
 import shutil
 import subprocess
 import sys
+import webbrowser
 
 from PySide6.QtCore import QThread, Signal
 from PySide6.QtWidgets import (
@@ -22,6 +24,8 @@ VISION_MODEL = "qwen3-vl:4b"
 OLLAMA_INSTALL_COMMAND = (
     "curl -fsSL https://ollama.com/install.sh | sh"
 )
+
+OLLAMA_DOWNLOAD_URL = "https://ollama.com/download"
 
 
 # ==========================================================
@@ -150,6 +154,8 @@ class SetupWizard(QWidget):
         self.ollama_found = False
         self.fast_found = False
         self.vision_found = False
+
+        self.setup_success = False
 
         self.setStyleSheet(
             """
@@ -313,7 +319,7 @@ class SetupWizard(QWidget):
         )
 
         self.cancel_button.clicked.connect(
-            self.close
+            self.cancel_setup
         )
 
         # --------------------------------------------------
@@ -371,6 +377,22 @@ class SetupWizard(QWidget):
         self.check_system()
 
     # ======================================================
+    # CANCEL
+    # ======================================================
+
+    def cancel_setup(self):
+
+        if self.downloader:
+            self.downloader.cancel()
+
+        if self.ollama_installer:
+            self.ollama_installer.requestInterruption()
+
+        self.setup_success = False
+
+        self.close()
+
+    # ======================================================
     # SYSTEM CHECK
     # ======================================================
 
@@ -382,6 +404,15 @@ class SetupWizard(QWidget):
 
         self.continue_button.setEnabled(
             False
+        )
+
+        self.progress.setVisible(
+            True
+        )
+
+        self.progress.setRange(
+            0,
+            0,
         )
 
         self.checker = SetupChecker()
@@ -435,9 +466,17 @@ class SetupWizard(QWidget):
 
             self.download_status.clear()
 
-            self.continue_button.setText(
-                "Install Ollama"
-            )
+            if sys.platform.startswith("linux"):
+
+                self.continue_button.setText(
+                    "Install Ollama"
+                )
+
+            else:
+
+                self.continue_button.setText(
+                    "Get Ollama"
+                )
 
             self.continue_button.setEnabled(
                 True
@@ -480,7 +519,7 @@ class SetupWizard(QWidget):
         ):
 
             self.status.setText(
-                "✓ PravithAI is ready to install"
+                "✓ PravithAI is ready to use"
             )
 
             self.continue_button.setText(
@@ -513,7 +552,10 @@ class SetupWizard(QWidget):
 
         if not self.ollama_found:
 
-            self.install_ollama()
+            if sys.platform.startswith("linux"):
+                self.install_ollama_linux()
+            else:
+                self.install_ollama_external()
 
             return
 
@@ -526,13 +568,15 @@ class SetupWizard(QWidget):
             and self.vision_found
         ):
 
-            QMessageBox.information(
+            answer = QMessageBox.information(
                 self,
                 "Ready!",
                 "All PravithAI AI models are already "
                 "installed.\n\n"
                 "No large download is needed.",
             )
+
+            self.setup_success = True
 
             self.close()
 
@@ -588,10 +632,10 @@ class SetupWizard(QWidget):
         )
 
     # ======================================================
-    # INSTALL OLLAMA
+    # INSTALL OLLAMA ON LINUX
     # ======================================================
 
-    def install_ollama(self):
+    def install_ollama_linux(self):
 
         answer = QMessageBox.question(
             self,
@@ -657,6 +701,66 @@ class SetupWizard(QWidget):
         )
 
         self.ollama_installer.start()
+
+    # ======================================================
+    # INSTALL OLLAMA ON WINDOWS / MACOS
+    # ======================================================
+
+    def install_ollama_external(self):
+
+        system_name = (
+            "Windows"
+            if sys.platform.startswith("win")
+            else "macOS"
+        )
+
+        answer = QMessageBox.question(
+            self,
+            "Install Ollama",
+            f"PravithAI needs Ollama to run its "
+            f"local AI models.\n\n"
+            f"Please install Ollama for {system_name} "
+            f"from the official Ollama website.\n\n"
+            f"After installation, return to PravithAI "
+            f"and click \"Check Again\".\n\n"
+            "Open the Ollama download page now?",
+            QMessageBox.StandardButton.Yes
+            | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes,
+        )
+
+        if (
+            answer
+            == QMessageBox.StandardButton.Yes
+        ):
+
+            try:
+                webbrowser.open(
+                    OLLAMA_DOWNLOAD_URL
+                )
+
+            except Exception:
+                pass
+
+        self.continue_button.setText(
+            "Check Again"
+        )
+
+        self.continue_button.setEnabled(
+            True
+        )
+
+        self.status.setText(
+            "Install Ollama, then check again"
+        )
+
+        self.models.setText(
+            f"Ollama is required on {system_name}."
+        )
+
+        self.download_status.setText(
+            OLLAMA_DOWNLOAD_URL
+        )
 
     # ======================================================
     # OLLAMA INSTALL OUTPUT
@@ -908,12 +1012,30 @@ class SetupWizard(QWidget):
             message,
         )
 
+    # ======================================================
+    # CLOSE EVENT
+    # ======================================================
+
+    def closeEvent(self, event):
+
+        if self.downloader and self.downloader.isRunning():
+            self.downloader.cancel()
+
+        if (
+            self.ollama_installer
+            and self.ollama_installer.isRunning()
+        ):
+            self.ollama_installer.requestInterruption()
+
+        event.accept()
+
 
 # ==========================================================
 # MAIN
 # ==========================================================
 
 def main():
+
     app = QApplication(
         sys.argv
     )
@@ -922,7 +1044,12 @@ def main():
 
     window.show()
 
-    return app.exec()
+    app.exec()
+
+    if window.setup_success:
+        return 0
+
+    return 1
 
 
 if __name__ == "__main__":
