@@ -1,0 +1,10 @@
+Package: pravithai
+Version: 0.1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Pravith
+Description: PravithAI local AI assistant
+ A local AI desktop assistant powered by Ollama.
+ Provides text and vision AI through a simple PySide6 interface.
+

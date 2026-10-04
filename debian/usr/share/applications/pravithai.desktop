@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=PravithAI
+Comment=Local AI assistant powered by Ollama
+Exec=/opt/pravithai/pravithai-launcher
+Icon=pravithai
+Terminal=false
+Type=Application
+Categories=Utility;Education;
+StartupNotify=true
