@@ -1,0 +1,73 @@
+name: Build PravithAI
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "PravithAI"
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PySide6 ollama pyinstaller
+
+      - name: Build Windows executable
+        run: |
+          pyinstaller --name PravithAI --windowed --onefile main.py --hidden-import=installer.setup_wizard --hidden-import=installer.model_downloader
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: PravithAI-Windows
+          path: dist/PravithAI.exe
+
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PySide6 ollama pyinstaller
+
+      - name: Build macOS app
+        run: |
+          pyinstaller --name PravithAI --windowed --onedir main.py --hidden-import=installer.setup_wizard --hidden-import=installer.model_downloader
+
+      - name: Create DMG
+        run: |
+          mkdir -p dmg
+          cp -R dist/PravithAI.app dmg/
+          hdiutil create \
+            -volname "PravithAI" \
+            -srcfolder dmg \
+            -ov \
+            -format UDZO \
+            dist/PravithAI-macOS.dmg
+
+      - name: Upload macOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: PravithAI-macOS
+          path: dist/PravithAI-macOS.dmg
