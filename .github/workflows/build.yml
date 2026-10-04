@@ -26,7 +26,7 @@ jobs:
 
       - name: Build Windows executable
         run: |
-          pyinstaller --name PravithAI --windowed --onefile main.py --hidden-import=installer.setup_wizard --hidden-import=installer.model_downloader
+          pyinstaller --name PravithAI --windowed --onefile --icon=pravithai-clean.ico main.py --hidden-import=installer.setup_wizard --hidden-import=installer.model_downloader
 
       - name: Upload Windows build
         uses: actions/upload-artifact@v4
@@ -53,7 +53,7 @@ jobs:
 
       - name: Build macOS app
         run: |
-          pyinstaller --name PravithAI --windowed --onedir main.py --hidden-import=installer.setup_wizard --hidden-import=installer.model_downloader
+          pyinstaller --name PravithAI --windowed --onedir --icon=pravithai-clean.icns main.py --hidden-import=installer.setup_wizard --hidden-import=installer.model_downloader
 
       - name: Create DMG
         run: |
