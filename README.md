@@ -1,99 +1,224 @@
 # PravithAI 🤖
 
-**PravithAI** is a local AI desktop assistant for Linux, powered by [Ollama](https://ollama.com/) and built with PySide6.
+### Local AI. Your computer. Your conversations.
 
-It runs AI models locally on your computer, giving you a simple desktop interface for chatting with AI without relying on cloud AI services.
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/ppppp44/PravithAI/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/ppppp44/PravithAI/build.yml?label=build)](https://github.com/ppppp44/PravithAI/actions)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-555.svg)](https://github.com/ppppp44/PravithAI/releases)
+[![Python](https://img.shields.io/badge/python-3.12+-3776AB.svg)](https://www.python.org/)
+[![Ollama](https://img.shields.io/badge/powered%20by-Ollama-black.svg)](https://ollama.com/)
+
+**PravithAI** is a local AI desktop assistant powered by [Ollama](https://ollama.com/) and built with PySide6.
+
+Chat with AI, understand images, and keep your conversations stored locally on your computer.
+
+---
 
 ## ✨ Features
 
-* 💬 Local AI chat
-* 🧠 Powered by Ollama
-* 🖼️ Image understanding with a vision model
-* 📚 Designed to work as a school-friendly AI tutor
-* 💾 Automatically saves conversations
-* 🖥️ Native Linux desktop application
-* ⚙️ First-launch setup wizard
-* 📦 Installable `.deb` package
-* 🎨 Custom PravithAI interface and branding
+* 💬 **Local AI chat**
+* 🧠 **Ollama-powered models**
+* 🖼️ **Image understanding**
+* 📚 **School-friendly AI tutor**
+* 💾 **Local conversation storage**
+* ⚙️ **First-launch setup wizard**
+* 🖥️ **Cross-platform desktop app**
+* 📦 **Native installers for each platform**
+* 🎨 **Custom PravithAI interface and branding**
+
+---
 
 ## 🤖 Models
 
 PravithAI currently uses:
 
-* `qwen3:1.7b` for fast text conversations
-* `qwen3-vl:4b` for image understanding
+| Model         | Purpose                 |
+| ------------- | ----------------------- |
+| `qwen3:1.7b`  | Fast text conversations |
+| `qwen3-vl:4b` | Image understanding     |
 
-The setup wizard automatically checks for Ollama and downloads any required models.
+The setup wizard checks for Ollama and helps configure the required models.
 
-## 📦 Installation
+---
 
-Download the latest `.deb` package from the **Releases** page.
+# 📥 Download
 
-Then install it with:
+## Latest Release: **v0.1.0**
+
+Choose your platform:
+
+| Platform   | Download                                                             |
+| ---------- | -------------------------------------------------------------------- |
+| 🐧 Linux   | **[Download `.deb`](https://github.com/ppppp44/PravithAI/releases)** |
+| 🪟 Windows | **[Download `.exe`](https://github.com/ppppp44/PravithAI/releases)** |
+| 🍎 macOS   | **[Download `.dmg`](https://github.com/ppppp44/PravithAI/releases)** |
+
+**[⬇️ View all releases](https://github.com/ppppp44/PravithAI/releases)**
+
+---
+
+# 📦 Installation
+
+### 🐧 Linux
+
+Download the `.deb` package, then run:
 
 ```bash
 sudo apt install ./PravithAI_0.1.0_amd64.deb
 ```
 
-After installation, launch **PravithAI** from your Applications menu.
+Launch **PravithAI** from your Applications menu.
 
-On the first launch, PravithAI will automatically open its setup wizard and configure the required AI components.
+The first launch opens the setup wizard.
 
-## 💻 Requirements
+### 🪟 Windows
 
-* Linux
-* 64-bit Intel or AMD processor
-* Python is **not required** for the packaged `.deb`
-* Internet connection for the initial Ollama/model setup
-* Enough storage for the AI models
+Download and run:
+
+```text
+PravithAI.exe
+```
+
+No Python installation is required.
+
+On first launch, PravithAI opens the setup wizard.
+
+If Ollama isn't installed, the wizard provides the official Ollama download page.
+
+### 🍎 macOS
+
+Download and open:
+
+```text
+PravithAI-macOS.dmg
+```
+
+Then launch **PravithAI**.
+
+No Python installation is required.
+
+On first launch, PravithAI opens the setup wizard.
+
+If Ollama isn't installed, the wizard provides the official Ollama download page.
+
+---
+
+# 💻 Requirements
+
+### All Platforms
+
+* 64-bit processor
+* Internet connection for initial setup
+* Enough free storage for the AI models
+* Ollama
 
 ### Recommended
 
 * 8 GB RAM or more
-* Modern Intel or AMD CPU
-* Several GB of free storage
+* Modern Intel, AMD, or Apple processor
+* Several GB of available storage
 
-## 🧩 How It Works
+AI performance depends heavily on your CPU, RAM, and available hardware acceleration.
+
+---
+
+# 🔐 Privacy
+
+PravithAI is designed around local AI processing.
+
+Normal AI conversations are processed through your locally running Ollama instance rather than a remote AI API.
+
+Saved conversations are stored locally on your computer.
+
+Internet access is required during initial setup to obtain Ollama and the required models.
+
+---
+
+# 🧩 How It Works
 
 ```text
-PravithAI
-   │
-   ├── PySide6 Desktop UI
-   │
-   ├── Ollama
-   │      ├── Qwen3 1.7B
-   │      └── Qwen3-VL 4B
-   │
-   └── Local AI Responses
+                         PravithAI
+                            │
+                 ┌──────────┴──────────┐
+                 │                     │
+             PySide6 UI          Setup Wizard
+                 │                     │
+                 └──────────┬──────────┘
+                            │
+                          Ollama
+                            │
+               ┌────────────┴────────────┐
+               │                         │
+          Qwen3 1.7B               Qwen3-VL 4B
+          Text model                Vision model
+               │                         │
+               └────────────┬────────────┘
+                            │
+                     Local AI responses
 ```
 
-Your conversations are stored locally on your computer.
+---
 
-## 🚀 Releases
+# 🛠️ Built With
 
-Download the latest version from:
+* 🐍 Python
+* 🎨 PySide6
+* 🦙 Ollama
+* 🧠 Qwen3
+* 👁️ Qwen3-VL
+* 📦 PyInstaller
+* 🐧 Debian packaging
+* ☁️ GitHub Actions
 
-**GitHub → Releases**
+---
 
-Current version:
+# 🧪 Build System
+
+PravithAI uses GitHub Actions to build its desktop releases.
+
+```text
+Linux
+  └── PravithAI_0.1.0_amd64.deb
+
+Windows
+  └── PravithAI.exe
+
+macOS
+  └── PravithAI-macOS.dmg
+```
+
+Windows and macOS builds are generated automatically using GitHub's hosted runners.
+
+---
+
+# 🚀 Project Status
 
 **PravithAI v0.1.0**
 
-## 🛠️ Built With
+🟢 Linux build
+🟢 Windows build
+🟢 macOS build
+🟢 Cross-platform setup wizard
+🟢 Local AI chat
+🟢 Vision model support
+🟢 Conversation saving
 
-* Python
-* PySide6
-* Ollama
-* Qwen3
-* Qwen3-VL
-* PyInstaller
-* Debian packaging
+PravithAI is actively being developed.
 
-## 📜 License
+---
+
+# 📜 License
 
 See the repository license for details.
 
 ---
 
-**PravithAI**
-*Local AI. Your computer. Your conversations.*
+<div align="center">
+
+### 🤖 PravithAI
+
+**Local AI. Your computer. Your conversations.**
+
+[⬇️ Download PravithAI](https://github.com/ppppp44/PravithAI/releases) · [🐛 Report an Issue](https://github.com/ppppp44/PravithAI/issues) · [⭐ GitHub](https://github.com/ppppp44/PravithAI)
+
+</div>
